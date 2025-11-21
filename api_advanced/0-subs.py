@@ -9,6 +9,7 @@ import sys
 # Ensure headers are defined globally or within the function if preferred
 USER_AGENT = {'User-Agent': 'my-python-script/0.1 by YourRedditUsername'}
 
+
 def number_of_subscribers(subreddit):
     """
     Returns the number of subscribers for a given subreddit.
