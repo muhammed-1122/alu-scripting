@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
-A function that queries the Reddit API and prints the titles of the
-first 10 hot posts listed for a given subreddit.
+Queries the Reddit API and prints the titles of the first 10 hot posts
+listed for a given subreddit.
 """
 import requests
 
@@ -9,7 +9,6 @@ import requests
 def top_ten(subreddit):
     """
     Prints the titles of the first 10 hot posts for a given subreddit.
-    If the subreddit is invalid, prints None.
 
     Args:
         subreddit (str): The name of the subreddit to query.
@@ -18,13 +17,14 @@ def top_ten(subreddit):
         print("None")
         return
 
-    headers = {'User-Agent': 'api_advanced-project/1.0'}
+    # Use a unique User-Agent to avoid API rate-limiting (HTTP 429/403)
+    headers = {'User-Agent': 'alx-project-advanced-api-v1.1-testing'}
     params = {'limit': 10}
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
 
     try:
         response = requests.get(url, headers=headers, params=params,
-                                allow_redirects=False)
+                                 allow_redirects=False)
 
         if response.status_code != 200:
             print("None")
@@ -34,11 +34,14 @@ def top_ten(subreddit):
         posts = data.get('data', {}).get('children', [])
 
         if not posts:
-            print("None")  # Subreddit is valid but has no posts
             return
 
         for post in posts:
             print(post.get('data', {}).get('title'))
 
-    except (requests.exceptions.RequestException, ValueError):
+    except requests.exceptions.RequestException:
         print("None")
+        return
+    except ValueError:
+        print("None")
+        return
