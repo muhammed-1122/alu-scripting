@@ -19,25 +19,23 @@ def top_ten(subreddit):
     # Parameters to limit the results to the first 10
     params = {'limit': 10}
 
-    # IMPORTANT: allow_redirects=False is key. A 302/301 status code
-    # (redirect) indicates an invalid subreddit.
     try:
         response = requests.get(
             url,
             headers=USER_AGENT,
             params=params,
             allow_redirects=False,
-            timeout=5  # Add a timeout for safety
+            timeout=5
         )
 
-        # 1. Handle invalid subreddit (redirects/not found)
+        # Handle invalid subreddit (redirects/not found)
         if response.status_code != 200:
             print("None")
             return
 
-        # 2. Parse and process valid response
+        # Parse and process valid response
         data = response.json()
-        
+
         # Navigate the nested JSON structure
         posts = data.get('data', {}).get('children', [])
 
@@ -52,15 +50,8 @@ def top_ten(subreddit):
                 print(title)
 
     except requests.exceptions.RequestException:
-        # Handles network errors, DNS failure, connection refused, etc.
+        # Handles network errors
         print("None")
     except ValueError:
-        # Handles potential JSON decoding errors (shouldn't happen with 200 status normally)
+        # Handles JSON decoding errors
         print("None")
-
-
-if __name__ == '__main__':
-    # This block is usually for testing and shouldn't affect the check if the function is imported
-    import sys
-    if len(sys.argv) >= 2:
-        top_ten(sys.argv[1])
