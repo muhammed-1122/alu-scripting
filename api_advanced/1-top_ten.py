@@ -5,7 +5,7 @@ listed for a given subreddit. Prints None if the subreddit is invalid.
 """
 import requests
 
-# Set a custom User-Agent
+# Set a custom User-Agent as required by the Reddit API
 USER_AGENT = {'User-Agent': 'my-python-script/0.1 by YourRedditUsername'}
 
 
@@ -28,7 +28,7 @@ def top_ten(subreddit):
             timeout=5
         )
 
-        # Handle invalid subreddit (redirects/not found)
+        # Handle invalid subreddit (redirects/not found/API error)
         if response.status_code != 200:
             print("None")
             return
@@ -36,7 +36,7 @@ def top_ten(subreddit):
         # Parse and process valid response
         data = response.json()
 
-        # Navigate the nested JSON structure
+        # The posts are inside the 'children' list
         posts = data.get('data', {}).get('children', [])
 
         if not posts:
@@ -50,7 +50,7 @@ def top_ten(subreddit):
                 print(title)
 
     except requests.exceptions.RequestException:
-        # Handles network errors
+        # Handles network errors, DNS failure, etc.
         print("None")
     except ValueError:
         # Handles JSON decoding errors
